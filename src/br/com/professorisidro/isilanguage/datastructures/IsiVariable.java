@@ -7,11 +7,13 @@ public class IsiVariable extends IsiSymbol {
 	
 	private int type;
 	private String value;
+	private int usedCount;
 	
 	public IsiVariable(String name, int type, String value) {
 		super(name);
 		this.type = type;
 		this.value = value;
+		this.usedCount = 0;
 	}
 
 	public int getType() {
@@ -33,6 +35,14 @@ public class IsiVariable extends IsiSymbol {
 	@Override
 	public String toString() {
 		return "IsiVariable [name=" + name + ", type=" + type + ", value=" + value + "]";
+	}
+	
+	public void increaseUsedCount() {
+		this.usedCount++;
+	}
+	
+	public int getUsedCount() {
+		return this.usedCount;
 	}
 	
 	public String generateJavaCode() {

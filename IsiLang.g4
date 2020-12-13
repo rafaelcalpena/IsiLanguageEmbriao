@@ -38,6 +38,7 @@ grammar IsiLang;
 		if (!symbolTable.exists(id)){
 			throw new IsiSemanticException("Symbol "+id+" not declared");
 		}
+		marcarUsado(id);
 	}
 
 	public void verificaTipo(String id, int tipoExpr){
@@ -45,6 +46,18 @@ grammar IsiLang;
 		if (tipoExpr != var.getType()) {
 	       	throw new IsiSemanticException("Can't attribute to symbol "+id+". Expected type "+var.getType()+" but got type "+tipoExpr); 
 		}
+	}
+	
+	public void verificaUsado(String id) {
+		IsiVariable var = (IsiVariable) symbolTable.get(id);
+		if (var.getUsedCount() == 0) {
+	       	throw new IsiSemanticException("Symbol "+id+" was declared but not used"); 
+		}	
+	}
+	
+	public void marcarUsado(String id) {
+		IsiVariable var = (IsiVariable) symbolTable.get(id);
+		var.increaseUsedCount();
 	}
 	
 	public void exibeComandos(){
@@ -61,7 +74,10 @@ grammar IsiLang;
 prog	: 'programa' decl bloco  'fimprog.'
            {  program.setVarTable(symbolTable);
            	  program.setComandos(stack.pop());
-           	 
+           	  for (IsiSymbol sym: symbolTable.getAll()) {
+				IsiVariable var = (IsiVariable) sym; 
+           	  	verificaUsado(var.getName());
+           	  }
            } 
 		;
 		
