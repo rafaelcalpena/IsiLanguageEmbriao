@@ -1,24 +1,24 @@
 programa
 
-  numero a, b;
-  texto  t1;
+  numero a, b.
+  texto  t1.
 
-  leia(a);
-  leia(b);
+  leia(a).
+  leia(b).
   
-  a = 1 + 2 * 3 / b;
+  a := 1 + 2 * 3 / b.
   
   enquanto ( a < 1 ) {
-  	leia(a);
+  	leia(a).
   }
 
   se ( a > b ) {
-     escreva (a);
+     escreva (a).
   }
   senao {
-     escreva (b);
+     escreva (b).
   }
   
   
 
-fimprog;
+fimprog.
