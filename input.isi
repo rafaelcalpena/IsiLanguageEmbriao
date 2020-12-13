@@ -1,17 +1,19 @@
 programa
 
-  numero a, b.
+  numero a, b, c, d, e, f.
   texto  t1.
+  
+  t1 := "oi".
+  
+  escreva (t1).
+  
+  escreva ("digite o valor de a ").
 
   leia(a).
+  
+  escreva ("digite o valor de b ").
   leia(b).
   
-  a := 1 + 2 * 3 / b.
-  
-  enquanto ( a < 1 ) {
-  	leia(a).
-  }
-
   se ( a > b ) {
      escreva (a).
   }
@@ -19,6 +21,22 @@ programa
      escreva (b).
   }
   
+  c := (1 + 2) * 3.
+  d := 1 + 2 * 3.
+  e := (3 / 3) - 2 * 2.
+  f := ((5+2+3) * 2) - 10 / 2.
   
-
+  escreva (c).
+  escreva (d).
+  escreva (e).
+  escreva (f).  
+  
+  a := 0.
+  enquanto ( a < 3 ) {
+  	escreva (a).
+  	a := a + 1.
+  }
+  
+  
+  
 fimprog.
