@@ -284,7 +284,7 @@ ID	: LET (LET | NUMBER)*
 NUMBER	: [0-9]+ ('.' [0-9]+)?
 		;
 
-TEXT 	: ASP (' ' | NUMBER | LET )+ ASP
+TEXT 	: ASP (' ' | NUMBER | LET )* ASP
 	;
 	
 LET	: ([A-Z] | [a-z])+
