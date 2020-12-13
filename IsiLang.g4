@@ -205,7 +205,13 @@ expr		:  termo (
 	            )*
 			;
 			
-termo		: ID { verificaID(_input.LT(-1).getText());
+termo		:
+			AP {
+	           _exprContent += "(";
+            } expr FP {
+	           _exprContent += ")";            
+            }
+			| ID { verificaID(_input.LT(-1).getText());
 	               _exprContent += _input.LT(-1).getText();
                  } 
             | 
