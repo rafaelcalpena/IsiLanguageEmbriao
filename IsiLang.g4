@@ -130,9 +130,8 @@ cmdleitura	: 'leia' AP
 			
 cmdescrita	: 'escreva' 
                  AP 
-                 ID { verificaID(_input.LT(-1).getText());
-	                  _writeID = _input.LT(-1).getText();
-                     } 
+                 (ID { verificaID(_input.LT(-1).getText());}
+                 | TEXT) { _writeID = _input.LT(-1).getText(); }
                  FP 
                  PF
                {
@@ -206,36 +205,29 @@ cmdenquanto    : 'enquanto' AP
 							    stack.peek().add(cmd);
 							}
 			;
-expr		:  termo ( 
-	             OP  { _exprContent += _input.LT(-1).getText();}
-	            termo
-	            )*
+expr		:  termo 
+               ( OP  { _exprContent += _input.LT(-1).getText();}
+	             termo
+	           )*
 			;
 			
 termo		:
-			AP {
-	           _exprContent += "(";
-            } expr FP {
-	           _exprContent += ")";            
-            }
-			|
-			ID { verificaID(_input.LT(-1).getText());
-			IsiVariable var = (IsiVariable) symbolTable.get(_input.LT(-1).getText());
-			verificaTipo(_exprID, var.getType());
+			(AP { _exprContent += "("; } 
+			expr 
+            FP { _exprContent += ")"; })
+			| ID   { verificaID(_input.LT(-1).getText());
+				   IsiVariable var = (IsiVariable) symbolTable.get(_input.LT(-1).getText());
+			       verificaTipo(_exprID, var.getType());
 	               _exprContent += _input.LT(-1).getText();
                  } 
-            | 
-              NUMBER
-              {
-              	verificaTipo(_exprID, IsiVariable.NUMBER);
-				_exprContent += _input.LT(-1).getText();
-              }
-			| TEXT 
-            	{
-              	verificaTipo(_exprID, IsiVariable.TEXT);
-              	_exprContent += _input.LT(-1).getText();
-            	}
+            | NUMBER { verificaTipo(_exprID, IsiVariable.NUMBER);
+				       _exprContent += _input.LT(-1).getText();
+                     }
+			| TEXT   { verificaTipo(_exprID, IsiVariable.TEXT);
+              		   _exprContent += _input.LT(-1).getText();
+            	     }
 			;
+			
 ASP	: '"'
 	;		
 	
@@ -276,7 +268,7 @@ ID	: LET (LET | NUMBER)*
 NUMBER	: [0-9]+ ('.' [0-9]+)?
 		;
 
-TEXT 	: ASP (' ' | NUMBER | LET | )+ ASP
+TEXT 	: ASP (' ' | NUMBER | LET )+ ASP
 	;
 	
 LET	: ([A-Z] | [a-z])+
