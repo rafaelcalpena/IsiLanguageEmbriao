@@ -131,9 +131,8 @@ cmd		:  cmdleitura
 		;
 		
 cmdleitura	: 'leia' AP
-                     ID { verificaID(_input.LT(-1).getText());
-                     	  _readID = _input.LT(-1).getText();
-                        } 
+                     ( ID { verificaID(_input.LT(-1).getText());}
+                     | TEXT) { _readID = _input.LT(-1).getText(); }
                      FP 
                      PF 
                      
