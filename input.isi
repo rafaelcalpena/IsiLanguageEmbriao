@@ -1,11 +1,15 @@
 programa
 
   numero a, b, c, d, e, f.
-  texto  t1.
+  texto  t1, t2.
   
   t1 := "oi".
   
   escreva (t1).
+  
+  escreva ("Qual o seu nome").
+  leia(t2).
+  
   
   escreva ("digite o valor de a ").
 
