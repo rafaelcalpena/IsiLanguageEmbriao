@@ -19,7 +19,7 @@ public class CommandEnquanto extends AbstractCommand {
 		for (AbstractCommand cmd: listaEnquanto) {
 			str.append(cmd.generateJavaCode());
 		}
-		str.append("}");
+		str.append("\n}");
 		return str.toString();
 	}
 	@Override

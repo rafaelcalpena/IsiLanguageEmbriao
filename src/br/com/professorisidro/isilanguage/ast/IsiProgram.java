@@ -24,7 +24,8 @@ public class IsiProgram {
 		for (AbstractCommand command: comandos) {
 			str.append(command.generateJavaCode()+"\n");
 		}
-		str.append("  }");
+		str.append("      _key.close();\n");
+		str.append("  }\n");
 		str.append("}");
 		
 		try {
