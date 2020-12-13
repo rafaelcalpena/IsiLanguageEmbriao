@@ -39,6 +39,13 @@ grammar IsiLang;
 			throw new IsiSemanticException("Symbol "+id+" not declared");
 		}
 	}
+
+	public void verificaTipo(String id, int tipoExpr){
+		IsiVariable var = (IsiVariable) symbolTable.get(id);
+		if (tipoExpr != var.getType()) {
+	       	throw new IsiSemanticException("Can't attribute to symbol "+id+". Expected type "+var.getType()+" but got type "+tipoExpr); 
+		}
+	}
 	
 	public void exibeComandos(){
 		for (AbstractCommand c: program.getComandos()){
@@ -205,15 +212,24 @@ expr		:  termo (
 			;
 			
 termo		: ID { verificaID(_input.LT(-1).getText());
+			IsiVariable var = (IsiVariable) symbolTable.get(_input.LT(-1).getText());
+			verificaTipo(_exprID, var.getType());
 	               _exprContent += _input.LT(-1).getText();
                  } 
             | 
               NUMBER
               {
-              	_exprContent += _input.LT(-1).getText();
+              	verificaTipo(_exprID, IsiVariable.NUMBER);
+				_exprContent += _input.LT(-1).getText();
               }
+			| TEXT 
+            	{
+              	verificaTipo(_exprID, IsiVariable.TEXT);
+              	_exprContent += _input.LT(-1).getText();
+            	}
 			;
-			
+ASP	: '"'
+	;		
 	
 AP	: '('
 	;
@@ -242,11 +258,17 @@ FCH  : '}'
 	 
 OPREL : '>' | '<' | '>=' | '<=' | '==' | '!='
       ;
-      
-ID	: [a-z] ([a-z] | [A-Z] | [0-9])*
+	
+ID	: LET (LET | NUMBER)*
 	;
 	
 NUMBER	: [0-9]+ ('.' [0-9]+)?
 		;
+
+TEXT 	: ASP (' ' | NUMBER | LET | )+ ASP
+	;
+	
+LET	: ([A-Z] | [a-z])+
+	;
 		
 WS	: (' ' | '\t' | '\n' | '\r') -> skip;
