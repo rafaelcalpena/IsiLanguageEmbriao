@@ -51,7 +51,7 @@ grammar IsiLang;
 	}
 }
 
-prog	: 'programa' decl bloco  'fimprog;'
+prog	: 'programa' decl bloco  'fimprog.'
            {  program.setVarTable(symbolTable);
            	  program.setComandos(stack.pop());
            	 
@@ -86,7 +86,7 @@ declaravar :  tipo ID  {
 	                  }
                     }
               )* 
-               SC
+               PF
            ;
            
 tipo       : 'numero' { _tipo = IsiVariable.NUMBER;  }
@@ -112,7 +112,7 @@ cmdleitura	: 'leia' AP
                      	  _readID = _input.LT(-1).getText();
                         } 
                      FP 
-                     SC 
+                     PF 
                      
               {
               	IsiVariable var = (IsiVariable)symbolTable.get(_readID);
@@ -127,7 +127,7 @@ cmdescrita	: 'escreva'
 	                  _writeID = _input.LT(-1).getText();
                      } 
                  FP 
-                 SC
+                 PF
                {
                	  CommandEscrita cmd = new CommandEscrita(_writeID);
                	  stack.peek().add(cmd);
@@ -139,7 +139,7 @@ cmdattrib	:  ID { verificaID(_input.LT(-1).getText());
                    } 
                ATTR { _exprContent = ""; } 
                expr 
-               SC
+               PF
                {
                	 CommandAtribuicao cmd = new CommandAtribuicao(_exprID, _exprContent);
                	 stack.peek().add(cmd);
@@ -225,10 +225,13 @@ FP	: ')'
 SC	: ';'
 	;
 	
+PF  : '.'
+	;
+	
 OP	: '+' | '-' | '*' | '/'
 	;
 	
-ATTR : '='
+ATTR : ':='
 	 ;
 	 
 VIR  : ','
