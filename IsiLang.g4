@@ -34,11 +34,18 @@ grammar IsiLang;
 	private ArrayList<AbstractCommand> listaFalse;
 	private ArrayList<AbstractCommand> listaEnquanto;
 	
-	public void verificaID(String id){
+	public void verificaID(String id, boolean atribuir){
 		if (!symbolTable.exists(id)){
 			throw new IsiSemanticException("Symbol "+id+" not declared");
+		} else {
+			IsiVariable var = (IsiVariable) symbolTable.get(id);
+			if (!var.getAttributed() && !atribuir) {
+				throw new IsiSemanticException("Symbol "+id+" not attributed");			
+			} else {
+				var.setAttributed(true);
+			}
 		}
-		marcarUsado(id);
+		marcarUsado(id);		
 	}
 
 	public void verificaTipo(String id, int tipoExpr){
@@ -131,7 +138,9 @@ cmd		:  cmdleitura
 		;
 		
 cmdleitura	: 'leia' AP
-                     ( ID { verificaID(_input.LT(-1).getText());}
+                     ( ID { 
+                     	verificaID(_input.LT(-1).getText(), true);
+                     }
                      | TEXT) { _readID = _input.LT(-1).getText(); }
                      FP 
                      PF 
@@ -145,7 +154,7 @@ cmdleitura	: 'leia' AP
 			
 cmdescrita	: 'escreva' 
                  AP 
-                 (ID { verificaID(_input.LT(-1).getText());}
+                 (ID { verificaID(_input.LT(-1).getText(), false);}
                  | TEXT) { _writeID = _input.LT(-1).getText(); }
                  FP 
                  PF
@@ -155,7 +164,7 @@ cmdescrita	: 'escreva'
                }
 			;
 			
-cmdattrib	:  ID { verificaID(_input.LT(-1).getText());
+cmdattrib	:  ID { verificaID(_input.LT(-1).getText(), true);
                     _exprID = _input.LT(-1).getText();
                    } 
                ATTR { _exprContent = ""; } 
@@ -169,10 +178,10 @@ cmdattrib	:  ID { verificaID(_input.LT(-1).getText());
 			
 			
 cmdselecao  :  'se' AP
-                    ID    { verificaID(_input.LT(-1).getText());
+                    ID    { verificaID(_input.LT(-1).getText(), false);
                     		_exprDecision = _input.LT(-1).getText(); }
                     OPREL { _exprDecision += _input.LT(-1).getText(); }
-                    (ID   { verificaID(_input.LT(-1).getText()); }
+                    (ID   { verificaID(_input.LT(-1).getText(), false); }
                     | NUMBER) {_exprDecision += _input.LT(-1).getText(); }
                     FP 
                     ACH 
@@ -202,10 +211,10 @@ cmdselecao  :  'se' AP
             ;
             
 cmdenquanto    : 'enquanto' AP
-                    		ID    { verificaID(_input.LT(-1).getText());
+                    		ID    { verificaID(_input.LT(-1).getText(), false);
                     				_exprDecision = _input.LT(-1).getText(); }
                     		OPREL { _exprDecision += _input.LT(-1).getText(); }
-                    		(ID   { verificaID(_input.LT(-1).getText()); }
+                    		(ID   { verificaID(_input.LT(-1).getText(), false); }
                     		| NUMBER) {_exprDecision += _input.LT(-1).getText(); }  
 							FP 
 							ACH 
@@ -230,7 +239,7 @@ termo		:
 			(AP { _exprContent += "("; } 
 			expr 
             FP { _exprContent += ")"; })
-			| ID   { verificaID(_input.LT(-1).getText());
+			| ID   { verificaID(_input.LT(-1).getText(), false);
 				   IsiVariable var = (IsiVariable) symbolTable.get(_input.LT(-1).getText());
 			       verificaTipo(_exprID, var.getType());
 	               _exprContent += _input.LT(-1).getText();

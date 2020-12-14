@@ -8,12 +8,14 @@ public class IsiVariable extends IsiSymbol {
 	private int type;
 	private String value;
 	private int usedCount;
+	private boolean attributed;
 	
 	public IsiVariable(String name, int type, String value) {
 		super(name);
 		this.type = type;
 		this.value = value;
 		this.usedCount = 0;
+		this.attributed = false;
 	}
 
 	public int getType() {
@@ -30,6 +32,14 @@ public class IsiVariable extends IsiSymbol {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	public boolean getAttributed() {
+		return this.attributed;
+	}
+	
+	public void setAttributed(boolean v) {
+		this.attributed = v;
 	}
 
 	@Override
