@@ -126,6 +126,7 @@ declaravar :  tipo ID  {
            
 tipo       : 'numero' { _tipo = IsiVariable.NUMBER; }
            | 'texto'  { _tipo = IsiVariable.TEXT;   }
+           | 'bool'   { _tipo = IsiVariable.BOOL;   }
            ;
         
 bloco	: { curThread = new ArrayList<AbstractCommand>(); 
@@ -291,6 +292,9 @@ termo		:
 			| TEXT   { verificaTipo(_exprID, IsiVariable.TEXT);
               		   _exprContent += _input.LT(-1).getText();
             	     }
+            | BOOL   { verificaTipo(_exprID, IsiVariable.TEXT);
+              		   _exprContent += _input.LT(-1).getText();
+            	     }
 			;
 			
 ASP	: '"'
@@ -343,6 +347,9 @@ TEXT : ASP (~'"')* ASP
 
 LET	 : ([A-Z] | [a-z])+
 	 ;
-		
+	 
+BOOL : 'true' | 'false'
+     ;
+	  
 WS	 : (' ' | '\t' | '\n' | '\r') -> skip
      ;
