@@ -12,6 +12,7 @@ grammar IsiLang;
 	import br.com.professorisidro.isilanguage.ast.CommandAtribuicao;
 	import br.com.professorisidro.isilanguage.ast.CommandDecisao;
 	import br.com.professorisidro.isilanguage.ast.CommandEnquanto;
+	import br.com.professorisidro.isilanguage.ast.CommandComentario;
 	import java.util.ArrayList;
 	import java.util.Stack;
 }
@@ -80,6 +81,8 @@ grammar IsiLang;
 	}
 }
 
+
+
 prog	: 'programa' decl bloco  'fimprog.'
            {  program.setVarTable(symbolTable);
            	  program.setComandos(stack.pop());
@@ -121,8 +124,8 @@ declaravar :  tipo ID  {
                PF
            ;
            
-tipo       : 'numero' { _tipo = IsiVariable.NUMBER;  }
-           | 'texto'  { _tipo = IsiVariable.TEXT;  }
+tipo       : 'numero' { _tipo = IsiVariable.NUMBER; }
+           | 'texto'  { _tipo = IsiVariable.TEXT;   }
            ;
         
 bloco	: { curThread = new ArrayList<AbstractCommand>(); 
@@ -137,12 +140,12 @@ cmd		:  cmdleitura
  		|  cmdattrib
  		|  cmdselecao  
  		|  cmdenquanto
+ 		|  cmdcomentario
 		;
 		
+		
 cmdleitura	: 'leia' AP
-                     ( ID { 
-                     	verificaID(_input.LT(-1).getText(), true);
-                     }
+                     ( ID { verificaID(_input.LT(-1).getText(), true); }
                      | TEXT) { _readID = _input.LT(-1).getText(); }
                      FP 
                      PF 
@@ -157,7 +160,7 @@ cmdleitura	: 'leia' AP
 cmdescrita	: 'escreva' 
                  AP 
                  (ID { verificaID(_input.LT(-1).getText(), false);}
-                 | TEXT) { _writeID = _input.LT(-1).getText(); }
+                 | TEXT ) { _writeID = _input.LT(-1).getText(); }
                  FP 
                  PF
                {
@@ -257,6 +260,16 @@ cmdenquanto    : 'enquanto' AP
 							    stack.peek().add(cmd);
 							}
 			;
+
+cmdcomentario : COMMENTA 
+				TEXT { _exprContent = _input.LT(-1).getText(); }
+				COMMENTF
+				{
+               	 CommandComentario cmd = new CommandComentario( _exprContent);
+               	 stack.peek().add(cmd);
+                }
+              ;
+
 expr		:  termo 
                ( OP  { _exprContent += _input.LT(-1).getText();}
 	             termo
@@ -309,7 +322,12 @@ ACH  : '{'
      
 FCH  : '}'
      ;
-	 
+     
+COMMENTA : '/*'
+         ; 
+        
+COMMENTF : '*/'
+         ;
 	 
 OPREL : '>' | '<' | '>=' | '<=' | '==' | '!='
       ;
@@ -318,12 +336,13 @@ ID	: LET (LET | NUMBER)*
 	;
 	
 NUMBER	: [0-9]+ ('.' [0-9]+)?
-		;
+		;		
 
-TEXT 	: ASP (' ' | NUMBER | LET )* ASP
+TEXT : ASP (~'"')* ASP 
 	;
-	
-LET	: ([A-Z] | [a-z])+
-	;
+
+LET	 : ([A-Z] | [a-z])+
+	 ;
 		
-WS	: (' ' | '\t' | '\n' | '\r') -> skip;
+WS	 : (' ' | '\t' | '\n' | '\r') -> skip
+     ;

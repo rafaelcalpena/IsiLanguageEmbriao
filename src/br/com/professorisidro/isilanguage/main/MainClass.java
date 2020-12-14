@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import br.com.professorisidro.isilanguage.exceptions.IsiSemanticException;
 import br.com.professorisidro.isilanguage.parser.IsiLangLexer;
 import br.com.professorisidro.isilanguage.parser.IsiLangParser;
+import java.nio.charset.StandardCharsets;
 
 /* esta é a classe que é responsável por criar a interação com o usuário
  * instanciando nosso parser e apontando para o arquivo fonte
@@ -20,7 +21,8 @@ public class MainClass {
 			IsiLangParser parser;
 			
 			// leio o arquivo "input.isi" e isso é entrada para o Analisador Lexico
-			lexer = new IsiLangLexer(CharStreams.fromFileName("input.isi"));
+			//lexer = new IsiLangLexer(CharStreams.fromFileName("input.isi"));
+			lexer = new IsiLangLexer(CharStreams.fromFileName("input.isi", StandardCharsets.ISO_8859_1));
 			
 			// crio um "fluxo de tokens" para passar para o PARSER
 			CommonTokenStream tokenStream = new CommonTokenStream(lexer);
