@@ -33,6 +33,8 @@ grammar IsiLang;
 	private ArrayList<AbstractCommand> listaTrue;
 	private ArrayList<AbstractCommand> listaFalse;
 	private ArrayList<AbstractCommand> listaEnquanto;
+	private Stack<String> exprDecisions = new Stack<String>();	
+	private Stack<ArrayList<AbstractCommand>> listasTrue = new Stack<ArrayList<AbstractCommand>>();
 	
 	public void verificaID(String id, boolean atribuir){
 		if (!symbolTable.exists(id)){
@@ -178,11 +180,22 @@ cmdattrib	:  ID { verificaID(_input.LT(-1).getText(), true);
 			
 			
 cmdselecao  :  'se' AP
-                    ID    { verificaID(_input.LT(-1).getText(), false);
-                    		_exprDecision = _input.LT(-1).getText(); }
-                    OPREL { _exprDecision += _input.LT(-1).getText(); }
+                    ID    { 
+                    		verificaID(_input.LT(-1).getText(), false);
+                    		_exprDecision = _input.LT(-1).getText(); 
+                    		exprDecisions.push(_exprDecision);
+                    	  }
+                    OPREL { 
+                    		_exprDecision = exprDecisions.pop();
+                    		_exprDecision += _input.LT(-1).getText(); 
+                    		exprDecisions.push(_exprDecision);
+                    	  }
                     (ID   { verificaID(_input.LT(-1).getText(), false); }
-                    | NUMBER) {_exprDecision += _input.LT(-1).getText(); }
+                    | NUMBER) {
+                    		_exprDecision = exprDecisions.pop();                    
+                    		_exprDecision += _input.LT(-1).getText(); 
+                    		exprDecisions.push(_exprDecision);
+                    		}
                     FP 
                     ACH 
                     { curThread = new ArrayList<AbstractCommand>(); 
@@ -192,7 +205,8 @@ cmdselecao  :  'se' AP
                     
                     FCH 
                     {
-                       listaTrue = stack.pop();	
+                       listaTrue = stack.pop();
+                       listasTrue.push(listaTrue);	
                     } 
                    ('senao' 
                    	 ACH
@@ -203,6 +217,8 @@ cmdselecao  :  'se' AP
                    	(cmd+) 
                    	FCH
                    	{
+                        _exprDecision = exprDecisions.pop();      
+                        listaTrue = listasTrue.pop();              	
                    		listaFalse = stack.pop();
                    		CommandDecisao cmd = new CommandDecisao(_exprDecision, listaTrue, listaFalse);
                    		stack.peek().add(cmd);
@@ -211,11 +227,22 @@ cmdselecao  :  'se' AP
             ;
             
 cmdenquanto    : 'enquanto' AP
-                    		ID    { verificaID(_input.LT(-1).getText(), false);
-                    				_exprDecision = _input.LT(-1).getText(); }
-                    		OPREL { _exprDecision += _input.LT(-1).getText(); }
+                    		ID    { 
+                    			verificaID(_input.LT(-1).getText(), false);
+                    			_exprDecision = _input.LT(-1).getText(); 
+                    			exprDecisions.push(_exprDecision); 
+                    			}
+                    		OPREL { 
+                    			_exprDecision = exprDecisions.pop();
+                    			_exprDecision += _input.LT(-1).getText(); 
+								exprDecisions.push(_exprDecision);
+                    		}
                     		(ID   { verificaID(_input.LT(-1).getText(), false); }
-                    		| NUMBER) {_exprDecision += _input.LT(-1).getText(); }  
+                    		| NUMBER) {
+                    			_exprDecision = exprDecisions.pop();
+                    			_exprDecision += _input.LT(-1).getText(); 
+                    			exprDecisions.push(_exprDecision);
+                    		}  
 							FP 
 							ACH 
 		                    { curThread = new ArrayList<AbstractCommand>(); 
@@ -225,6 +252,7 @@ cmdenquanto    : 'enquanto' AP
 							FCH 
 							{
 							    listaEnquanto = stack.pop();
+							    _exprDecision = exprDecisions.pop();
 							    CommandEnquanto cmd = new CommandEnquanto(_exprDecision, listaEnquanto);
 							    stack.peek().add(cmd);
 							}
