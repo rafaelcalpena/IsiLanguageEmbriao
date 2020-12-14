@@ -2,43 +2,91 @@ programa
 
   numero a, b, c, d, e, f.
   texto  t1, t2.
-  
-  t1 := " ".
-    
-  escreva ("Qual é o seu nome?").
-  leia(t2).
-  
-  escreva ("digite o valor de a ").
 
+  escreva ("Qual é o seu nome?").
+  leia(t1).
+  
+  escreva ("Digite o valor de a:").
   leia(a).
   
-  /* "comentário de teste . & ?" */
+  /* "Esse é um comentário para mostra a possibilidade de inserir um." */
   
-  escreva ("digite o valor de b ").
+  escreva ("Digite o valor de b:").
   leia(b).
   
   se ( a > b ) {
-     escreva (a).
+    escreva("Seu a é maior que seu b. O valor dele é:").
+    escreva (a).
   }
   senao {
-     escreva (b).
+    escreva("Seu b é maior que seu a. O valor dele é:").
+    escreva (b).
   }
+  
+  escreva ("O compilador também aceita números decimais.").
+  escreva ("Digite um número decimal:").
+  leia (a).
+  escreva ("Seu número é ").
+  escreva (a).
   
   c := (1 + 2) * 3.
   d := 1 + 2 * 3.
   e := (3 / 3) - 2 * 2.
   f := ((5+2+3) * 2) - 10 / 2.
   
+  escreva("Vamos mostrar a utilização de parênteses em expressões numéricas.").
+  
+  escreva("(1 + 2) * 3 = ").
   escreva (c).
+  
+  escreva("1 + 2 * 3 = ").
   escreva (d).
+  
+  escreva("(3 / 3) - 2 * 2 = ").
   escreva (e).
+  
+  escreva("((5+2+3) * 2) - 10 / 2 = ").
   escreva (f).  
   
+  
+  escreva ("Vamos mostrar a execução da estrutura de repetição.").
+  escreva ("Para isso, vou contar de 0 a 3 sozinho.").
   a := 0.
-  enquanto ( a < 3 ) {
+  enquanto ( a <= 3 ) {
   	escreva (a).
   	a := a + 1.
   }
+  
+  escreva ("Também é possível colocar decisões aninhadas:").
+  escreva ("Digite um número de 1 a 100: ").
+  leia (a).
+  se ( a > 25 ) {
+	se ( a < 75) {
+		escreva ("Seu número está entre 25 e 75").
+	}
+	senao {
+		escreva ("Seu número é maior que 75").
+	}
+  }
+  senao {
+  	escreva ("Seu número é menor que 25").
+  }
+  
+  escreva ("E repetições aninhadas:").
+  
+  a := 0.
+  b := 1.
+  enquanto ( a < 3 ) {
+    b := 1.
+    enquanto (b <= 2) {
+      escreva (b).
+      b := b + 1.
+    }
+    a := a + 1.
+  }
+    
+  /* "a := t1" */
+  /* "g := 32" */
   
   
   
