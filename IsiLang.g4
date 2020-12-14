@@ -58,7 +58,7 @@ grammar IsiLang;
 	public void verificaUsado(String id) {
 		IsiVariable var = (IsiVariable) symbolTable.get(id);
 		if (var.getUsedCount() == 0) {
-	       	throw new IsiSemanticException("Symbol "+id+" was declared but not used"); 
+	       	System.out.println("WARNING: Symbol "+id+" was declared but not used"); 
 		}	
 	}
 	
